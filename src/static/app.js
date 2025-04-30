@@ -47,6 +47,42 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  function renderActivities(activities) {
+    const activitiesList = document.getElementById("activities-list");
+    activitiesList.innerHTML = "";
+
+    Object.entries(activities).forEach(([name, details]) => {
+      const activityCard = document.createElement("div");
+      activityCard.className = "activity-card";
+
+      activityCard.innerHTML = `
+        <h4>${name}</h4>
+        <p>${details.description}</p>
+        <p><strong>Schedule:</strong> ${details.schedule}</p>
+        <p><strong>Max Participants:</strong> ${details.max_participants}</p>
+        <div class="participants-container">
+          <h4>Participants:</h4>
+          <ul class="participants-list">
+            ${details.participants
+              .map(
+                (participant) =>
+                  `<li>${participant}</li>`
+              )
+              .join("")}
+          </ul>
+        </div>
+      `;
+
+      activitiesList.appendChild(activityCard);
+    });
+  }
+
+  // Fetch and render activities
+  fetch("/activities")
+    .then((response) => response.json())
+    .then((data) => renderActivities(data))
+    .catch((error) => console.error("Error fetching activities:", error));
+
   // Handle form submission
   signupForm.addEventListener("submit", async (event) => {
     event.preventDefault();
